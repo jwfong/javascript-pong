@@ -2,35 +2,38 @@
 var canvus = document.getElementById("gameCanvus");
 let canvusContext = canvus.getContext('2d');
 
-let framesPerSecond = 10;
-let ballX = 5;
-let ballY = 5;
+let ballX = 50;
+let ballY = 50;
+
 let ballSpeedX = 5;
 let ballSpeedY = 4
 
-let paddle1Y = 250;
-const paddleHeight = 20
+let paddle1Y = 50;
+const paddleHeight = 100;
+
+let framesPerSecond = 30;
 
 function movement() {
   ballX = ballX + ballSpeedX;
   ballY = ballY + ballSpeedY;
   
-  if(ballX > canvus.width) {
+  if (ballX > canvus.width) {
     ballSpeedX = -ballSpeedX;
-  } else if (ballX <= 0) {
+  } 
+  if (ballX < 0) {
       ballSpeedX = -ballSpeedX;
   };
 
-  
-  if(ballY > canvus.height) {
+  if (ballY > canvus.height) {
     ballSpeedY = -ballSpeedY;
-  } else if (ballY <= 0) {
+  } 
+  if (ballY < 0) {
       ballSpeedY = -ballSpeedY;
   };
 }
 
 function calculateMousePos(evt) {
-  var rect = canvas.getBoundingClientRect();
+  var rect = canvus.getBoundingClientRect();
   var root = document.documentElement;
   var mouseX = evt.clientX - rect.left - root.scrollLeft;
   var mouseY = evt.clientY - rect.top - root.scrollTop;
@@ -44,8 +47,11 @@ function calculateMousePos(evt) {
 
 
 function drawGameBoard() {
+  //canus board
   colorRect(0, 0, canvus.width, canvus.height, 'black');
-  colorRect(1, paddle1Y, 5, 20, 'white');
+  //left paddle
+  colorRect(1, paddle1Y, 5, paddleHeight, 'white');
+  //ball
   drawBall(ballX, ballY, 3, 'white');
   
 };
@@ -55,11 +61,17 @@ function colorRect(leftX, topY, width, height, color){
   canvusContext.fillRect(leftX, topY, width, height);
 };
 
+
 function drawBall(centerX, centerY, radius, color) {
   canvusContext.fillStyle = color;
   canvusContext.beginPath();
   canvusContext.arc(centerX, centerY, radius, 0, Math.PI*2, true);
   canvusContext.fill();
+}
+
+function ballReset() {
+  ballX = canvus.width/2;
+  ballY = canvus.height/2;
 }
 
 setInterval(function(){
@@ -69,7 +81,8 @@ setInterval(function(){
 
 canvus.addEventListener('mousemove', function(evt) {
   var mousePos = calculateMousePos(evt);
-  paddle1Y = mousePos.y;
+  paddle1Y = mousePos.y - (paddleHeight/2);
+  
 })
 
 
