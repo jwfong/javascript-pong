@@ -5,31 +5,42 @@ let canvusContext = canvus.getContext('2d');
 let ballX = 50;
 let ballY = 50;
 
-let ballSpeedX = 5;
+let ballSpeedX = 10;
 let ballSpeedY = 4
 
 let paddle1Y = 50;
+let paddle2Y = 50;
 const paddleHeight = 100;
-
+const paddleThickness = 5;
 let framesPerSecond = 30;
 
 function movement() {
   ballX = ballX + ballSpeedX;
   ballY = ballY + ballSpeedY;
   
-  if (ballX > canvus.width) {
-    ballSpeedX = -ballSpeedX;
-  } 
   if (ballX < 0) {
-      ballSpeedX = -ballSpeedX;
-  };
+    if (ballY > paddle1Y && ballY < paddle1Y + paddleHeight) {
+      ballSpeedX = -ballSpeedX
+    } else {
+      ballReset();
+    }
+  }
+
+  if (ballX > canvus.width) {
+    if (ballY > paddle2Y && ballY < paddle2Y + paddleHeight) {
+      ballSpeedX = -ballSpeedX
+    } else {
+      ballReset();
+    }
+  } 
+
+  if (ballY < 0) {
+      ballSpeedY = -ballSpeedY;
+  }
 
   if (ballY > canvus.height) {
     ballSpeedY = -ballSpeedY;
   } 
-  if (ballY < 0) {
-      ballSpeedY = -ballSpeedY;
-  };
 }
 
 function calculateMousePos(evt) {
@@ -49,10 +60,12 @@ function calculateMousePos(evt) {
 function drawGameBoard() {
   //canus board
   colorRect(0, 0, canvus.width, canvus.height, 'black');
-  //left paddle
-  colorRect(1, paddle1Y, 5, paddleHeight, 'white');
+  //left paddle for player
+  colorRect(1, paddle1Y, paddleThickness, paddleHeight, 'white');
+  //computers paddle
+  colorRect(canvus.width - paddleThickness-1, paddle2Y, paddleThickness, paddleHeight, 'white');
   //ball
-  drawBall(ballX, ballY, 3, 'white');
+  drawBall(ballX, ballY, 7, 'white');
   
 };
 
@@ -70,6 +83,7 @@ function drawBall(centerX, centerY, radius, color) {
 }
 
 function ballReset() {
+  ballSpeedX = -ballSpeedX;
   ballX = canvus.width/2;
   ballY = canvus.height/2;
 }
@@ -81,7 +95,8 @@ setInterval(function(){
 
 canvus.addEventListener('mousemove', function(evt) {
   var mousePos = calculateMousePos(evt);
-  paddle1Y = mousePos.y - (paddleHeight/2);
+  //paddle1Y = mousePos.y - (paddleHeight/2);
+  paddle2Y = mousePos.y - (paddleHeight/2);
   
 })
 
